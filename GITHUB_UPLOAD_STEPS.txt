@@ -1,0 +1,18 @@
+GITHUB UPLOAD STEPS
+===================
+
+1. Go to GitHub.
+2. Create a new repository.
+3. Name it:
+   eve-market-machine
+4. Keep it private if this is only for you.
+5. Upload everything inside the eve-market-machine folder.
+6. Make sure these are included:
+   - public/
+   - netlify/
+   - supabase/
+   - package.json
+   - netlify.toml
+   - README.md
+7. Do NOT upload real API keys.
+8. Connect this GitHub repo to Netlify.

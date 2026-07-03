@@ -1,0 +1,93 @@
+EVE DEPLOY CHECKLIST
+====================
+
+1. SUPABASE
+-----------
+Open your Supabase project.
+Go to SQL Editor.
+Paste and run:
+
+supabase/eve-schema.sql
+
+Confirm these tables exist:
+- eve_settings
+- eve_markets
+- eve_scan_runs
+- eve_market_scores
+- eve_price_alarms
+
+2. GITHUB
+---------
+Create a new GitHub repo.
+Upload the full eve-market-machine folder contents.
+Do not upload .env files.
+
+3. NETLIFY
+----------
+Create a new Netlify site from GitHub.
+Select this repo.
+
+Build settings:
+
+Build command:
+npm run build
+
+Publish directory:
+public
+
+Functions directory is handled by netlify.toml:
+netlify/functions
+
+4. NETLIFY ENVIRONMENT VARIABLES
+--------------------------------
+Add these in Netlify > Site configuration > Environment variables:
+
+TWELVEDATA_API_KEY = your Twelve Data API key
+SUPABASE_URL = your Supabase project URL
+SUPABASE_SERVICE_ROLE_KEY = your Supabase service role key
+EVE_ADMIN_PASSWORD = your private password
+
+Leave TWELVEDATA_EXCHANGE blank unless Twelve Data tells you otherwise.
+
+5. DEPLOY
+---------
+Trigger deploy.
+Open the Netlify site.
+
+6. FIRST TEST
+-------------
+Press Set / Change Admin Password.
+Enter the same password as EVE_ADMIN_PASSWORD.
+Press Scan Now.
+Wait for result.
+Press Enable Alarm Sound once so the browser allows EVE to make noise.
+
+7. CHECK SUPABASE
+-----------------
+Go to Supabase table editor.
+Check eve_scan_runs has a new row.
+Check eve_market_scores has market rows.
+Check eve_price_alarms exists.
+
+8. ON/OFF TEST
+--------------
+Press Turn Scanner Off.
+Wait for next scheduled scan.
+The next scan run should say scanner_off and should make 0 Twelve Data calls.
+
+9. TWELVE DATA LIMIT SAFETY
+---------------------------
+Full scan is around 36 calls per scan.
+Runs every 5 minutes.
+No WebSocket.
+No M1.
+No direct browser calls to Twelve Data.
+
+
+10. PRICE ALARM TEST
+--------------------
+After the first scan, press Set Alarm on one market card.
+Enter a target price.
+EVE automatically decides whether the alarm is above or below based on the latest scanned price.
+Run Scan Now or wait for the next 5 minute scan.
+When price reaches the level, the alarm banner appears and the sound plays if sound is enabled.
