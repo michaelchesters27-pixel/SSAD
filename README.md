@@ -24,18 +24,15 @@ It ranks the cleanest market to focus on using:
 
 ## Markets included
 
-1. XAU/USD
-2. XAG/USD
-3. EUR/USD
-4. GBP/USD
-5. USD/JPY
-6. AUD/USD
-7. USD/CAD
-8. EUR/JPY
-9. GBP/JPY
-10. BTC/USD
-11. ETH/USD
-12. SOL/USD
+1. EUR/USD
+2. GBP/USD
+3. AUD/USD
+4. USD/JPY
+5. USD/CAD
+6. EUR/JPY
+7. GBP/JPY
+8. XAU/USD
+9. BTC/USD
 
 ## Timeframes used
 
@@ -142,3 +139,26 @@ Because EVE uses REST polling, alarms trigger on scan updates, not tick-by-tick 
 ## Important
 
 This is a market selection tool, not a trade execution bot. It does not place trades. It does not give direct buy/sell entries. Its job is to rank where your attention should go.
+
+
+## v4 asset reduction + scan lock
+
+This version scans 9 assets only:
+
+1. EUR/USD
+2. GBP/USD
+3. AUD/USD
+4. USD/JPY
+5. USD/CAD
+6. EUR/JPY
+7. GBP/JPY
+8. XAU/USD
+9. BTC/USD
+
+Removed from live scanning:
+
+- XAG/USD / Silver
+- ETH/USD
+- SOL/USD
+
+Scheduled scan lock remains enabled. If Netlify fires the same scheduled scan twice inside 4 minutes, the second run is recorded as `skipped_recent_run` and makes no Twelve Data calls.

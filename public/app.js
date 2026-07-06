@@ -278,8 +278,8 @@ function formatPrice(value, symbol = "") {
   if (!Number.isFinite(n)) return "--";
   let dp = 5;
   if (symbol.includes("JPY")) dp = 3;
-  if (symbol.startsWith("XAU") || symbol.startsWith("XAG")) dp = 2;
-  if (["BTC/USD", "ETH/USD", "SOL/USD"].includes(symbol)) dp = 2;
+  if (symbol.startsWith("XAU")) dp = 2;
+  if (["BTC/USD"].includes(symbol)) dp = 2;
   return n.toLocaleString("en-GB", { minimumFractionDigits: dp, maximumFractionDigits: dp });
 }
 

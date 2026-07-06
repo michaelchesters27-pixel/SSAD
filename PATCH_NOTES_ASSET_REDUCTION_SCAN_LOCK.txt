@@ -1,0 +1,24 @@
+EVE Bias v4 asset-reduction + scan-lock patch
+
+Changes:
+- Keeps BTC/USD.
+- Keeps XAU/USD / Gold.
+- Removes XAG/USD / Silver from live scanning.
+- Removes ETH/USD from live scanning.
+- Removes SOL/USD from live scanning.
+- Keeps the scheduled scan lock: duplicate scheduled runs inside 4 minutes are skipped before Twelve Data calls.
+
+Final scan list:
+1. EUR/USD
+2. GBP/USD
+3. AUD/USD
+4. USD/JPY
+5. USD/CAD
+6. EUR/JPY
+7. GBP/JPY
+8. XAU/USD
+9. BTC/USD
+
+Optional but recommended Supabase patch:
+Run supabase/v4-asset-reduction-patch.sql once to disable old assets in the database.
+The code also has a safety filter, so it will not call Twelve Data for XAG/USD, ETH/USD or SOL/USD even if old rows remain enabled.
