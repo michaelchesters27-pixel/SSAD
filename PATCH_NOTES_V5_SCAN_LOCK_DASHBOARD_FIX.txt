@@ -1,0 +1,12 @@
+EVE Bias v5 — Scan-lock dashboard fix
+
+What changed:
+- Keeps the 9-asset list: EUR/USD, GBP/USD, AUD/USD, USD/JPY, USD/CAD, EUR/JPY, GBP/JPY, XAU/USD, BTC/USD.
+- Keeps scheduled scan-lock protection.
+- Fixes the bug where a skipped duplicate run could block the next proper scheduled run.
+- Fixes the dashboard so skipped_recent_run records do not replace the latest real scan result.
+
+Expected behaviour:
+- Duplicate Netlify scheduled hits can still appear in scan history as skipped_recent_run.
+- They should not burn Twelve Data calls.
+- They should not wipe the top pick / market count / visible dashboard result.
