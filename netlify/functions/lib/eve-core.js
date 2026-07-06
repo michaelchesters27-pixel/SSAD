@@ -983,5 +983,5 @@ module.exports = {
   acknowledgeAllTriggeredAlarms,
   loadPriceAlarms,
   marketOpenInfo,
-  nextFiveMinuteIso
+  nextScanDueIso
 };

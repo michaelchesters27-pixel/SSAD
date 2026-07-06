@@ -1,0 +1,10 @@
+EVE Bias v6b - 502 fix
+
+Fixes a runtime ReferenceError caused by exporting nextFiveMinuteIso after v6 renamed the dashboard timing helper to nextScanDueIso.
+The broken export caused latest-results/eve-scan imports to fail and the dashboard to show Request failed: 502.
+
+Keeps:
+- 9-asset list
+- self-healing every-minute scheduled check
+- real scan only when due
+- skipped_recent_run dashboard protection
