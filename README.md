@@ -162,3 +162,8 @@ Removed from live scanning:
 - SOL/USD
 
 Scheduled scan lock remains enabled. If Netlify fires the same scheduled scan twice inside 4 minutes, the second run is recorded as `skipped_recent_run` and makes no Twelve Data calls.
+
+
+## v6 self-healing due scanner
+
+Bias now checks every minute and only performs a real Twelve Data scan when the latest real scheduled scan is due. This reduces missed 5-minute cycles while keeping API usage protected. No SQL required.

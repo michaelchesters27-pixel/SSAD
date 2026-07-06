@@ -17,4 +17,4 @@ const scheduledHandler = async () => {
   }
 };
 
-exports.handler = schedule("*/5 * * * *", scheduledHandler);
+exports.handler = schedule("* * * * *", scheduledHandler);

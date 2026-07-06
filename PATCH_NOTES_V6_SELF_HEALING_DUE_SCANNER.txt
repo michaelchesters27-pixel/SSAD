@@ -1,0 +1,14 @@
+EVE Bias v6 - Self-healing due scanner
+
+What changed:
+- Scheduled function now checks every 1 minute instead of relying on Netlify to fire exactly every 5 minutes.
+- A real Twelve Data scan only runs when the latest real scheduled scan is older than the protection window.
+- Default protection window is 4.5 minutes, so normal scans still happen about every 5 minutes.
+- skipped_recent_run rows are still recorded for quick exits, but they do not replace the dashboard result.
+- Dashboard Next Scan is now a next-due estimate based on the latest real scan, not a fake fixed cron promise.
+- 9-asset list and dashboard fix remain in place.
+
+Why:
+Netlify scheduled functions were not firing perfectly on the 00/05/10/15 minute marks. This version self-heals by checking every minute and scanning when due, reducing missed 5-minute Bias cycles without hammering Twelve Data.
+
+No SQL required.

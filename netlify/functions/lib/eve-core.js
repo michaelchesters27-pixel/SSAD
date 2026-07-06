@@ -520,7 +520,8 @@ async function loadMarkets(sb) {
 }
 
 
-const SCHEDULED_SCAN_LOCK_MINUTES = Number(process.env.SCHEDULED_SCAN_LOCK_MINUTES || 4);
+const SCHEDULED_SCAN_LOCK_MINUTES = Number(process.env.SCHEDULED_SCAN_LOCK_MINUTES || 4.5);
+const REAL_SCAN_DUE_MINUTES = Number(process.env.REAL_SCAN_DUE_MINUTES || 5);
 
 async function skipIfRecentScheduledRun(sb, tableName, currentRunId, startedAt, source, force) {
   if (source !== "scheduled" || force) return null;
@@ -547,7 +548,7 @@ async function skipIfRecentScheduledRun(sb, tableName, currentRunId, startedAt, 
   if (!recentRun) return null;
 
   const completedAt = new Date();
-  const notes = `Scheduled scan skipped: another scheduled run already started at ${recentRun.started_at} within the last ${lockMinutes} minutes. No Twelve Data calls made.`;
+  const notes = `Scheduled due-check skipped: latest real scheduled scan started at ${recentRun.started_at}, which is inside the ${lockMinutes}-minute protection window. No Twelve Data calls made.`;
 
   const { error: updateError } = await sb.from(tableName).update({
     completed_at: completedAt.toISOString(),
@@ -729,12 +730,25 @@ async function runScan({ source = "scheduled", force = false } = {}) {
   };
 }
 
-function nextFiveMinuteIso(from = new Date()) {
+function nextScanDueIso(latestRun, from = new Date()) {
+  const dueMinutes = Number.isFinite(REAL_SCAN_DUE_MINUTES) && REAL_SCAN_DUE_MINUTES > 0
+    ? REAL_SCAN_DUE_MINUTES
+    : 5;
+
+  if (latestRun?.started_at) {
+    const lastStarted = new Date(latestRun.started_at);
+    if (!Number.isNaN(lastStarted.getTime())) {
+      const nextDue = new Date(lastStarted.getTime() + dueMinutes * 60 * 1000);
+      if (nextDue > from) return nextDue.toISOString();
+    }
+  }
+
+  // If a real scan is already due/overdue, the every-minute scheduled function
+  // should catch it on the next Netlify tick. Show the next minute, not a fake
+  // fixed 5-minute cron promise.
   const d = new Date(from.getTime());
   d.setUTCSeconds(0, 0);
-  const m = d.getUTCMinutes();
-  const add = 5 - (m % 5 || 5);
-  d.setUTCMinutes(m + add);
+  d.setUTCMinutes(d.getUTCMinutes() + 1);
   return d.toISOString();
 }
 
@@ -787,7 +801,7 @@ async function getLatestResults() {
   return {
     ok: true,
     generated_at: now.toISOString(),
-    next_scan_at: nextFiveMinuteIso(now),
+    next_scan_at: nextScanDueIso(run, now),
     scanner_enabled: settings.scanner_enabled !== false,
     latest_run: run || null,
     markets: scores,
