@@ -420,7 +420,30 @@ function scoreMarket(market, candlesByTf, openInfo, now = new Date()) {
     openInfo.session_score * 0.05;
 
   if (bias === "mixed") score = Math.min(score, 64);
-  if (m5Detail.chop_label === "choppy") score = Math.min(score, 58);
+
+  // V6D: remove the old hard 58 ceiling for directional markets.
+  // Choppy M5 price action should reduce confidence, but it should not trap
+  // a genuinely aligned H1/M15/M5 bullish or bearish market at 58 forever.
+  // Mixed markets stay controlled; directional markets get a penalty plus a
+  // cautious floor when the wider bias evidence is strong enough.
+  if (m5Detail.chop_label === "choppy") {
+    if (bias === "mixed") {
+      score = Math.min(score, 58);
+    } else {
+      score -= 5;
+
+      const absBiasScore = Math.abs(biasScore);
+      if (directionAgreement >= 2 && absBiasScore >= 35) {
+        const agreementLift = directionAgreement >= 3 ? 6 : 3;
+        const biasLift = clamp((absBiasScore - 35) * 0.18, 0, 8);
+        const directionalFloor = clamp(58 + agreementLift + biasLift, 60, 72);
+        score = Math.max(score, directionalFloor);
+      }
+
+      score = Math.min(score, 78);
+    }
+  }
+
   score = clamp(score, 0, 100);
 
   let status = "Avoid";

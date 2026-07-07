@@ -1,0 +1,12 @@
+EVE Bias v6D — Reviewed Bias 58 Fix
+
+Base file: user-uploaded current v6b ZIP.
+
+What changed:
+- Removed the hard 58% ceiling for directional bullish/bearish markets when M5 is choppy.
+- Mixed/choppy markets are still capped at 58%.
+- Directional markets still receive a choppy-M5 confidence penalty.
+- If H1/M15/M5 direction evidence is strong enough, the scanner can now score above 58 instead of being trapped at 58.
+
+No SQL changes required.
+Upload only the contents of this eve-market-machine folder to the existing EVE Bias GitHub repo.
